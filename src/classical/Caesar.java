@@ -24,16 +24,17 @@ public String Encrypt(String painText,int key)
 	painText=painText.toUpperCase();
 	char [] cipherTextarr=new char[painText.length()];
 	cipherTextarr=painText.toCharArray();
-	for(int i=0;i!=painText.length();i++)
+	int j=0;
+	for( int i=0;i!=painText.length();j++,i++)
 		{
-		if (!Character.isAlphabetic(cipherTextarr[i]))continue;
+		if (!Character.isAlphabetic(cipherTextarr[i])){j--;continue;}
 		cipherTextarr[i]-=65;
 		System.out.print((int)cipherTextarr[i]+"\t");
 		cipherTextarr[i]=(char)(((int)cipherTextarr[i]+key)%26);
 		System.out.println((int)cipherTextarr[i]);
 		cipherTextarr[i]+=65;
 		}
-		return new String (cipherTextarr);
+		return new String (cipherTextarr,0,j);
 
 	} 
 public String Decrypt(String cipherText){
@@ -42,10 +43,11 @@ public String Decrypt(String cipherText){
 public String Decrypt(String cipherText,int key)
 	{
 	byte [] plainTextarr=new byte[cipherText.length()];
-	for(int i=0;i==cipherText.length();i++)
+	int i=0;
+	for( i=0;i==cipherText.length();i++)
 		{
 		plainTextarr[i]=(byte)((cipherText.charAt(i)+key)%26);
 		}
-		return new String (plainTextarr);
+		return new String (plainTextarr,0,i);
 	}
 }
