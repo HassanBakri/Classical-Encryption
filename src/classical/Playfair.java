@@ -36,7 +36,7 @@ private void consructKeyMatrix(String keystr) {
 		keyMatrix[i]=(char)alfapatic[index];
 		}
 	//System.arraycopy(alfapatic, 0, keyMatrix, i, keyMatrix.length-1);
-	for(int j=0;j!=25;j++){System.out.print(keyMatrix[j]);}
+	//for(int j=0;j!=25;j++){System.out.print(keyMatrix[j]);}
 	}
 private String removeDupp(String keystr) {
 	char [] prekey=keystr.toCharArray();	
@@ -64,45 +64,43 @@ private void shift(char[] prekey, int j) {
 	}
 String Encrypt(String plainText){
 	plainText = plainText.toUpperCase();
+	plainText=plainText.replace('J', 'I');
 	String cipherText="";
+	String key=new String (keyMatrix);
 	plainText=playFairFilter(plainText);
 	System.out.println("\n"+plainText);
 	char a,b;
 	int a1,b1;
+	int base ,offset_a1,offset_b1;
 	int temp=0;
 	for(int i=0;i!=plainText.length();i+=2)
 	{
 		a=plainText.charAt(i);
 		b=plainText.charAt(i+1);
-		String key=new String (keyMatrix);
+		if(a==b){i--;b='X';}
 		a1=key.indexOf(a);
 		b1=key.indexOf(b);
-		System.out.println(a1+"\t"+b1);
 		int diff=(int)Math.abs(a1-b1);
-		System.out.println(diff);
 		if((a1)/5==(b1)/5)
 		{
-		System.out.println("here1");
-		a1=a1+1;
-		b1=b1+1;
-		System.out.println(a1+"\t"+b1);
-
+		base=a1/5;
+		offset_a1=(a1-base*5)+1;
+		offset_b1=(b1-base*5)+1;
+		a1=base*5+(offset_a1%5);
+		b1=base*5+(offset_b1%5);
 		}
 		else if(diff%5==0)
 		{
-			System.out.println("here2");
-			a1=a1+5;
-			b1=b1+5;	
+			a1=(a1+5)%25;
+			b1=(b1+5)%25;	
 		}
 		else
 		{
-			System.out.println("here3");
 			//rowIndex * numberOfColumns + columnIndex.
 			//columnIndex * numberOfRows + rowIndex.
 			temp=a1;
 			a1 = b1%5 + (a1/5)*5;
 			b1 = temp%5 + (b1/5)*5;
-			System.out.println(a1+"\t"+b1);
 		}
 		cipherText+=keyMatrix[a1];
 		cipherText+=keyMatrix[b1];
@@ -112,9 +110,9 @@ String Encrypt(String plainText){
 String Decrypt(String ciphertext){
 	ciphertext = ciphertext.toUpperCase();
 	String plaintext="";
-	ciphertext=playFairFilter(ciphertext);
 	System.out.println("\n"+ciphertext);
 	char a,b;
+	int base ,offset_a1,offset_b1;
 	int a1,b1;
 	int temp=0;
 	for(int i=0;i!=ciphertext.length();i+=2)
@@ -129,57 +127,44 @@ String Decrypt(String ciphertext){
 		System.out.println(diff);
 		if((a1)/5==(b1)/5)
 		{
-		System.out.println("here1");
-		a1=a1-1;
-		b1=b1-1;
-		System.out.println(a1+"\t"+b1);
-
+			base=a1/5;
+			offset_a1=(a1-base*5)-1;
+			offset_b1=(b1-base*5)-1;
+			a1=base*5+(offset_a1%5);
+			b1=base*5+(offset_b1%5);
 		}
 		else if(diff%5==0)
 		{
-			System.out.println("here2");
-			a1=a1-5;
-			b1=b1-5;	
+			a1=(a1-5)%25;
+			b1=(b1-5)%25;	
 		}
 		else
 		{
-			System.out.println("here3");
 			//rowIndex * numberOfColumns + columnIndex.
 			//columnIndex * numberOfRows + rowIndex.
 			temp=a1;
 			a1 = b1%5 + (a1/5)*5;
 			b1 = temp%5 + (b1/5)*5;
-			System.out.println(a1+"\t"+b1);
 		}
 		plaintext+=keyMatrix[a1];
 		plaintext+=keyMatrix[b1];
 	}
 	return plaintext;
 	}
-
 private String playFairFilter(String plainText) {
 	int length =plainText.length();	
-	char a,b;
 	char[] plainTextarr =new char[2*length];
 	int index=-1;
-	for(int i=0;i!=length-1;i++)
+	for(int i=0;i<length;i++)
 	{
-		if(!Character.isAlphabetic(plainText.charAt(i))){continue;}
-		else{
-		a=plainText.charAt(i);
-		b=plainText.charAt(i+1);
-		if(a==b)
-		{
-			plainTextarr[++index]=a;
-			plainTextarr[++index]='X';
-		}
-		else
-		{
-			plainTextarr[++index]=a;
-		}
-		}
+		if(Character.isAlphabetic(plainText.charAt(i)))
+			{
+			plainTextarr[++index]=plainText.charAt(i);
+			}		
+		else{continue;}
 	}
-	plainTextarr[++index]=plainText.charAt(length-1);
+	plainText=new String(plainTextarr, 0, index+1);
+	System.out.println("clean\t:"+plainText);
 	if(!((index+1)%2==0))plainTextarr[++index]='X';
 	return new String(plainTextarr,0,index+1);
 	}
