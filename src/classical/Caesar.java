@@ -20,34 +20,47 @@ public String Encrypt(String plainText){
 public String Encrypt(String painText,int key)
 	{
 	painText=painText.trim();
-	
+
 	painText=painText.toUpperCase();
 	char [] cipherTextarr=new char[painText.length()];
 	cipherTextarr=painText.toCharArray();
-	int j=0;
-	for( int i=0;i!=painText.length();j++,i++)
+	int i;
+	for(  i=0;i<painText.length();i++)
 		{
-		if (!Character.isAlphabetic(cipherTextarr[i])){j--;continue;}
+		if (!Character.isAlphabetic(cipherTextarr[i])){continue;}
 		cipherTextarr[i]-=65;
-		System.out.print((int)cipherTextarr[i]+"\t");
-		cipherTextarr[i]=(char)(((int)cipherTextarr[i]+key)%26);
-		System.out.println((int)cipherTextarr[i]);
+		System.out.println((byte)cipherTextarr[i]);
+		//System.out.print((int)cipherTextarr[i]+"\t");
+		cipherTextarr[i]=(char)(((byte)cipherTextarr[i]+key)%26);
+		//System.out.println((int)cipherTextarr[i]);
 		cipherTextarr[i]+=65;
 		}
-		return new String (cipherTextarr,0,j);
+		return new String (cipherTextarr,0,i);
 
-	} 
+	}
 public String Decrypt(String cipherText){
 	return Decrypt(cipherText, getkey());
 }
 public String Decrypt(String cipherText,int key)
 	{
-	byte [] plainTextarr=new byte[cipherText.length()];
-	int i=0;
-	for( i=0;i==cipherText.length();i++)
+	cipherText=cipherText.toUpperCase();
+	char [] plainTextarr= cipherText.toCharArray();
+	int i,j=0;
+	for(  i=0;i <cipherText.length();j++,i++)
 		{
-		plainTextarr[i]=(byte)((cipherText.charAt(i)+key)%26);
+		if (!Character.isAlphabetic(cipherText.charAt(i))){j--;continue;}
+		plainTextarr[i]-=65;
+		//System.out.print((int)plainTextarr[i]+"\t");
+		plainTextarr[j]=(char) ((plainTextarr[i]-key+26)%26);
+		plainTextarr[j]+=65;
 		}
-		return new String (plainTextarr,0,i);
+		return new String (plainTextarr,0,j);
 	}
+public static void main(String[] args) {
+	Caesar cipher=new Caesar();
+	String plain="BahryUniVersityz";
+	String ciphertext=cipher.Encrypt(plain);
+	String plainText=cipher.Decrypt(ciphertext);
+	System.out.println("Plain Text     : "+plain+"\nCipherText     : "+ciphertext+"\nDecrypted Text : "+plainText);
+}
 }
